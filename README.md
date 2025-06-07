@@ -37,7 +37,7 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ```
 
    If you encounter an error about `donkey-generated-track-v0` not being found,
-   make sure the `gym-donkeycar` package is installed (the setup script installs
-   it automatically) or run training via `./start_training.sh` which adds the
-   package to the `PYTHONPATH`.
+   ensure the `gym-donkeycar` package is available. The provided scripts add it
+   to the `PYTHONPATH` and the transformer example imports it automatically so
+   environments are registered.
 

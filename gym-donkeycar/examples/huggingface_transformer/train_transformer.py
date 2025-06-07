@@ -3,6 +3,10 @@ from collections import deque
 from typing import Deque, List, Tuple
 
 import gymnasium as gym
+# Import gym_donkeycar so its environments (e.g. donkey-generated-track-v0)
+# get registered with Gymnasium. Without this import gym.make() will fail to
+# locate the environment.
+import gym_donkeycar  # noqa: F401  (unused import needed for registration)
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
