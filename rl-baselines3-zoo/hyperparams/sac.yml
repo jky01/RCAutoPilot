@@ -234,11 +234,8 @@ FetchReach-v1:
 # ==== Custom Envs ===
 
 donkey-generated-track-v0:
-  env_wrapper:
-    - gymnasium.wrappers.time_limit.TimeLimit:
-        max_episode_steps: 500
-    - rl_zoo3.wrappers.HistoryWrapper:
-        horizon: 5
+  # Disable environment wrappers to avoid issues with missing
+  # gymnasium wrapper modules on some installations.
   n_timesteps: !!float 1e6
   policy: 'MlpPolicy'
   learning_rate: !!float 7.3e-4
