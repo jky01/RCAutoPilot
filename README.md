@@ -10,7 +10,7 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    it and installs all required packages.
 
    ```bash
-   source ./setup_env.sh
+   sudo source ./setup_env.sh
    ```
 
    Optionally install extra tools for plotting and tests after the environment
