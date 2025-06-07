@@ -15,8 +15,8 @@ with open("README.md") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-# gym 0.23 introduces breaking changes
-requirements = ["gym==0.22", "numpy", "pillow"]
+# gym 0.26 introduces breaking changes that are supported here
+requirements = ["gym>=0.26.2", "numpy", "pillow"]
 
 
 setup(
