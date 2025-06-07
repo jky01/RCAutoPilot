@@ -96,6 +96,17 @@ def main() -> None:
         help="Path to save checkpoints. Training resumes from this file if it exists.",
     )
     parser.add_argument(
+        "--model-path",
+        default="rl-baselines3-zoo/donkey_transformer.pt",
+        help="Where to periodically save the model (state_dict).",
+    )
+    parser.add_argument(
+        "--save-freq",
+        type=int,
+        default=1,
+        help="Save the model every N epochs to --model-path. Set 0 to disable.",
+    )
+    parser.add_argument(
         "--checkpoint-freq",
         type=int,
         default=1,
@@ -119,6 +130,8 @@ def main() -> None:
         model.load_state_dict(ckpt["model"])
         optim.load_state_dict(ckpt["optimizer"])
         start_epoch = ckpt.get("epoch", 0)
+    elif args.model_path and os.path.exists(args.model_path):
+        model.load_state_dict(torch.load(args.model_path, map_location=device))
 
     epoch = start_epoch
     while True:
@@ -141,12 +154,15 @@ def main() -> None:
                 },
                 args.checkpoint,
             )
+        if args.save_freq and (epoch + 1) % args.save_freq == 0 and args.model_path:
+            torch.save(model.state_dict(), args.model_path)
 
         epoch += 1
         if args.epochs and epoch >= args.epochs:
             break
 
-    torch.save(model.state_dict(), "donkey_transformer.pt")
+    if args.model_path:
+        torch.save(model.state_dict(), args.model_path)
 
 
 if __name__ == "__main__":
