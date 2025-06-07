@@ -36,8 +36,9 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ./start_training.sh --transformer
    ```
 
-   By default, the example trains for 10 epochs. Pass `--epochs <n>` after
-   `--transformer` to change the number of epochs. You can also save and
+   By default, the example trains continuously until interrupted. Pass
+   `--epochs <n>` after `--transformer` to train for a fixed number of epochs.
+   You can also save and
    resume training with `--checkpoint <file>` which stores a checkpoint every
    epoch (change the interval with `--checkpoint-freq`).
 

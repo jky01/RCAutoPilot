@@ -84,9 +84,12 @@ def main() -> None:
     parser.add_argument("--episodes", type=int, default=10)
     parser.add_argument("--seq-len", type=int, default=4)
     parser.add_argument("--batch-size", type=int, default=4)
-    # Train for more than one epoch by default so the example does not
-    # terminate immediately after data collection.
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=0,
+        help="Number of epochs to train. Set to 0 to run indefinitely.",
+    )
     parser.add_argument(
         "--checkpoint",
         default=None,
@@ -117,7 +120,8 @@ def main() -> None:
         optim.load_state_dict(ckpt["optimizer"])
         start_epoch = ckpt.get("epoch", 0)
 
-    for epoch in range(start_epoch, args.epochs):
+    epoch = start_epoch
+    while True:
         for frames, acts, next_action in loader:
             images = frames.to(device)
             actions = acts.to(device)
@@ -137,6 +141,10 @@ def main() -> None:
                 },
                 args.checkpoint,
             )
+
+        epoch += 1
+        if args.epochs and epoch >= args.epochs:
+            break
 
     torch.save(model.state_dict(), "donkey_transformer.pt")
 
