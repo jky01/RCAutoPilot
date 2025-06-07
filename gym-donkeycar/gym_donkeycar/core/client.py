@@ -100,7 +100,7 @@ class SDClient:
                     try:
                         data = s.recv(1024 * 256)
                     except ConnectionAbortedError:
-                        logger.warn("socket connection aborted")
+                        logger.warning("socket connection aborted")
                         print("socket connection aborted")
                         self.do_process_msgs = False
                         break
