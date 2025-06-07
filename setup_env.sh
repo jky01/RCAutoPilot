@@ -15,5 +15,5 @@ fi
 source venv/bin/activate
 
 sudo ./setup_software.sh
-
-echo "Environment ready and activated. Use 'deactivate' to exit."
+./setup_software_noroot.sh
+#echo "Environment ready and activated. Use 'deactivate' to exit."
