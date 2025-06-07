@@ -6,6 +6,11 @@ set -e
 
 # Move to the rl-baselines3-zoo directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+cd "$SCRIPT_DIR"
+
+source venv/bin/activate
+
 cd "$SCRIPT_DIR/rl-baselines3-zoo"
 
 
