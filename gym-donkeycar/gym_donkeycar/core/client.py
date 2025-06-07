@@ -14,7 +14,7 @@ import logging
 import select
 import socket
 import time
-from threading import Thread
+from threading import Thread, current_thread
 from typing import Any, Dict
 
 from .util import replace_float_notation
@@ -68,9 +68,11 @@ class SDClient:
 
     def stop(self) -> None:
         # signal proc_msg loop to stop, then wait for thread to finish
-        # close socket
+        # close socket. Avoid joining the current thread to prevent
+        # "cannot join current thread" RuntimeError when stop() is called
+        # from within the processing thread itself.
         self.do_process_msgs = False
-        if self.th is not None:
+        if self.th is not None and self.th is not current_thread():
             self.th.join()
         if self.s is not None:
             self.s.close()
