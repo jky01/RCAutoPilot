@@ -7,10 +7,10 @@ import logging
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
-from gym.utils import seeding
+from gymnasium import spaces
+from gymnasium.utils import seeding
 
 from gym_donkeycar.envs.donkey_proc import DonkeyUnityProcess
 from gym_donkeycar.envs.donkey_sim import DonkeyUnitySimContoller

@@ -3,7 +3,7 @@
 
 """Tests for `gym_donkeycar` package."""
 
-import gym
+import gymnasium as gym
 
 env_list = [
     "donkey-warehouse-v0",

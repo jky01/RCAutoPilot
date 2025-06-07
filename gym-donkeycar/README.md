@@ -24,7 +24,7 @@ but want to understand this one. Simple example code:
 
 ```python
 import os
-import gym
+import gymnasium as gym
 import gym_donkeycar
 import numpy as np
 
@@ -52,7 +52,7 @@ env.close()
 or if you already launched the simulator:
 
 ```python
-import gym
+import gymnasium as gym
 import numpy as np
 
 import gym_donkeycar
