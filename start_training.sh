@@ -31,6 +31,14 @@ fi
 
 if [[ "$1" == "--transformer" ]]; then
     shift
+    # Ensure transformers is installed when running the example
+    if ! python - <<'EOF' >/dev/null 2>&1
+import transformers
+EOF
+    then
+        echo "Error: transformers is not installed. Run 'pip install transformers' inside the virtualenv." >&2
+        exit 1
+    fi
     # Run the HuggingFace transformer example located in gym-donkeycar
     # Additional arguments are forwarded to the example script
     python "$SCRIPT_DIR/gym-donkeycar/examples/huggingface_transformer/train_transformer.py" "$@"
