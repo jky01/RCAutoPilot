@@ -53,7 +53,7 @@ class DonkeyEnv(gym.Env):
     :param conf: configuration dictionary
     """
 
-    metadata = {"render.modes": ["human", "rgb_array"]}
+    metadata = {"render_modes": ["human", "rgb_array"]}
 
     ACTION_NAMES: List[str] = ["steer", "throttle"]
     VAL_PER_PIXEL: int = 255
@@ -130,21 +130,32 @@ class DonkeyEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action: np.ndarray) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
+    def step(
+        self, action: np.ndarray
+    ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
+        """Take an action in the environment using the new Gym API."""
         for _ in range(self.frame_skip):
             self.viewer.take_action(action)
             observation, reward, done, info = self.viewer.observe()
-        return observation, reward, done, info
 
-    def reset(self) -> np.ndarray:
+        terminated = done
+        truncated = False
+        return observation, reward, terminated, truncated, info
+
+    def reset(
+        self, *, seed: Optional[int] = None, options: Optional[dict] = None
+    ) -> Tuple[np.ndarray, Dict[str, Any]]:
+        """Reset the environment using the new Gym API."""
+        if seed is not None:
+            self.seed(seed)
         # Activate hand brake, so the car does not move
         self.viewer.handler.send_control(0, 0, 1.0)
         time.sleep(0.1)
         self.viewer.reset()
         self.viewer.handler.send_control(0, 0, 1.0)
         time.sleep(0.1)
-        observation, reward, done, info = self.viewer.observe()
-        return observation
+        observation, _, _, info = self.viewer.observe()
+        return observation, info
 
     def render(self, mode: str = "human", close: bool = False) -> Optional[np.ndarray]:
         if close:
