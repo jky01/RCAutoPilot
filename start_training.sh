@@ -8,5 +8,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR/rl-baselines3-zoo"
 
+# Ensure the local gym-donkeycar package is on the Python path so
+# its environments get registered even if it has not been installed.
+export PYTHONPATH="$SCRIPT_DIR/gym-donkeycar${PYTHONPATH:+:$PYTHONPATH}"
+
 python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
        --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "$@"

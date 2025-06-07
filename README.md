@@ -30,3 +30,8 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
    The script runs RL Baselines3 Zoo with the SAC algorithm on the `donkey-generated-track-v0` environment. Additional arguments will be forwarded to `train.py`.
 
+   If you encounter an error about `donkey-generated-track-v0` not being found,
+   make sure the `gym-donkeycar` package is installed (the setup script installs
+   it automatically) or run training via `./start_training.sh` which adds the
+   package to the `PYTHONPATH`.
+
