@@ -43,6 +43,11 @@ class DonkeyTransformer(nn.Module):
         batch_size, seq_len, c, h, w = images.shape
         images = images.reshape(batch_size * seq_len, c, h, w)
         inputs = self.processor(images=images, return_tensors="pt")
+        # HuggingFace processors always return CPU tensors. Move them to the
+        # same device as the model to avoid type or device mismatches when
+        # calling the ViT model.
+        device = next(self.parameters()).device
+        inputs = {k: v.to(device) for k, v in inputs.items()}
         features = self.vit(**inputs).last_hidden_state[:, 0]
         features = features.reshape(batch_size, seq_len, -1)
         tokens = torch.cat([features, actions], dim=-1)
