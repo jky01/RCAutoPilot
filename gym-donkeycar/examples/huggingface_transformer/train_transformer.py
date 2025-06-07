@@ -83,7 +83,9 @@ def main() -> None:
     parser.add_argument("--episodes", type=int, default=10)
     parser.add_argument("--seq-len", type=int, default=4)
     parser.add_argument("--batch-size", type=int, default=4)
-    parser.add_argument("--epochs", type=int, default=1)
+    # Train for more than one epoch by default so the example does not
+    # terminate immediately after data collection.
+    parser.add_argument("--epochs", type=int, default=10)
     args = parser.parse_args()
 
     env = gym.make(args.env)

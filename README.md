@@ -36,6 +36,9 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ./start_training.sh --transformer
    ```
 
+   By default, the example trains for 10 epochs. Pass `--epochs <n>` after
+   `--transformer` to change the number of epochs.
+
    If you encounter an error about `donkey-generated-track-v0` not being found,
    ensure the `gym-donkeycar` package is available. The provided scripts add it
    to the `PYTHONPATH` and the transformer example imports it automatically so
