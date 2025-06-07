@@ -1,6 +1,7 @@
 #!/bin/bash
-# Start RL Baselines3 Zoo training for DonkeyCar
-# Usage: ./start_training.sh [additional train.py arguments]
+# Start RL Baselines3 Zoo training for DonkeyCar or train the HuggingFace
+# transformer example.
+# Usage: ./start_training.sh [--transformer [args...]] [additional train.py arguments]
 
 set -e
 
@@ -28,5 +29,12 @@ then
     exit 1
 fi
 
-python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
-       --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "$@"
+if [[ "$1" == "--transformer" ]]; then
+    shift
+    # Run the HuggingFace transformer example located in gym-donkeycar
+    # Additional arguments are forwarded to the example script
+    python "$SCRIPT_DIR/gym-donkeycar/examples/huggingface_transformer/train_transformer.py" "$@"
+else
+    python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
+        --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "$@"
+fi
