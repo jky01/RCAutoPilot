@@ -19,9 +19,9 @@ cd "$SCRIPT_DIR/rl-baselines3-zoo"
 export PYTHONPATH="$SCRIPT_DIR/gym-donkeycar${PYTHONPATH:+:$PYTHONPATH}"
 
 # Check that gymnasium is installed. The RL Zoo and gym-donkeycar
-# environments rely on it and importing wrappers will fail otherwise.
+# environments rely on it and wrappers are optional.
 if ! python - <<'EOF' >/dev/null 2>&1
-import gymnasium.wrappers.time_limit
+import gymnasium
 EOF
 then
     echo "Error: gymnasium is not installed. Please run 'source ./setup_env.sh'" >&2
