@@ -1,6 +1,7 @@
 import argparse
 from collections import deque
 from typing import Deque, List, Tuple
+import os
 
 import gymnasium as gym
 # Import gym_donkeycar so its environments (e.g. donkey-generated-track-v0)
@@ -86,6 +87,17 @@ def main() -> None:
     # Train for more than one epoch by default so the example does not
     # terminate immediately after data collection.
     parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument(
+        "--checkpoint",
+        default=None,
+        help="Path to save checkpoints. Training resumes from this file if it exists.",
+    )
+    parser.add_argument(
+        "--checkpoint-freq",
+        type=int,
+        default=1,
+        help="Save a checkpoint every N epochs. Set to 0 to disable.",
+    )
     args = parser.parse_args()
 
     env = gym.make(args.env)
@@ -98,7 +110,14 @@ def main() -> None:
     optim = torch.optim.Adam(model.parameters(), lr=1e-4)
     loss_fn = nn.MSELoss()
 
-    for epoch in range(args.epochs):
+    start_epoch = 0
+    if args.checkpoint and os.path.exists(args.checkpoint):
+        ckpt = torch.load(args.checkpoint, map_location=device)
+        model.load_state_dict(ckpt["model"])
+        optim.load_state_dict(ckpt["optimizer"])
+        start_epoch = ckpt.get("epoch", 0)
+
+    for epoch in range(start_epoch, args.epochs):
         for frames, acts, next_action in loader:
             images = frames.to(device)
             actions = acts.to(device)
@@ -108,6 +127,16 @@ def main() -> None:
             loss.backward()
             optim.step()
         print(f"Epoch {epoch+1} loss: {loss.item():.4f}")
+
+        if args.checkpoint_freq and (epoch + 1) % args.checkpoint_freq == 0 and args.checkpoint:
+            torch.save(
+                {
+                    "epoch": epoch + 1,
+                    "model": model.state_dict(),
+                    "optimizer": optim.state_dict(),
+                },
+                args.checkpoint,
+            )
 
     torch.save(model.state_dict(), "donkey_transformer.pt")
 
