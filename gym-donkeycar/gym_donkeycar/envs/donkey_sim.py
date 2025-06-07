@@ -382,7 +382,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
 
     def on_recv_message(self, message: Dict[str, Any]) -> None:
         if "msg_type" not in message:
-            logger.warn("expected msg_type field")
+            logger.warning("expected msg_type field")
             return
         msg_type = message["msg_type"]
         logger.debug("got message :" + msg_type)
@@ -394,7 +394,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
     # ------- Env interface ---------- #
 
     def reset(self) -> None:
-        logger.debug("reseting")
+        logger.debug("resetting")
         self.send_reset_car()
         self.timer.reset()
         time.sleep(1)

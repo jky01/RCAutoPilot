@@ -117,7 +117,7 @@ class VecVideoRecorder(VecEnvWrapper):
             self.recorded_frames.append(frame)
         else:
             self._stop_recording()
-            logger.warn(
+            logger.warning(
                 f"Recording stopped: expected type of frame returned by render to be a numpy array, got instead {type(frame)}."
             )
 
@@ -139,7 +139,7 @@ class VecVideoRecorder(VecEnvWrapper):
         assert self.recording, "_stop_recording was called, but no recording was started"
 
         if len(self.recorded_frames) == 0:  # pragma: no cover
-            logger.warn("Ignored saving a video as there were zero frames to save.")
+            logger.warning("Ignored saving a video as there were zero frames to save.")
         else:
             from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
@@ -152,4 +152,4 @@ class VecVideoRecorder(VecEnvWrapper):
     def __del__(self) -> None:
         """Warn the user in case last video wasn't saved."""
         if len(self.recorded_frames) > 0:  # pragma: no cover
-            logger.warn("Unable to save last video! Did you call close()?")
+            logger.warning("Unable to save last video! Did you call close()?")
