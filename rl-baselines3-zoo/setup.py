@@ -7,7 +7,10 @@ with open(os.path.join("rl_zoo3", "version.txt")) as file_handler:
     __version__ = file_handler.read().strip()
 
 # Copy hyperparams files for packaging
-shutil.copytree("hyperparams", os.path.join("rl_zoo3", "hyperparams"))
+dest_dir = os.path.join("rl_zoo3", "hyperparams")
+if os.path.exists(dest_dir):
+    shutil.rmtree(dest_dir)
+shutil.copytree("hyperparams", dest_dir)
 
 long_description = """
 # RL Baselines3 Zoo: A Training Framework for Stable Baselines3 Reinforcement Learning Agents
