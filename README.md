@@ -4,16 +4,17 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
 ## Quick Start
 
-1. **Install dependencies** (recommended inside a virtual environment):
+1. **Create a Python environment and install dependencies**:
+
+   Run the setup script which creates a virtual environment in `venv`, activates
+   it and installs all required packages.
 
    ```bash
-   apt-get install swig cmake ffmpeg
-   pip install -r rl-baselines3-zoo/requirements.txt
-   pip install -e rl-baselines3-zoo
-   pip install -e gym-donkeycar
+   source ./setup_env.sh
    ```
 
-   Optionally install extra tools for plotting and tests:
+   Optionally install extra tools for plotting and tests after the environment
+   is activated:
 
    ```bash
    pip install -e rl-baselines3-zoo[plots,tests]
