@@ -14,6 +14,7 @@ from gymnasium.utils import seeding
 
 from gym_donkeycar.envs.donkey_proc import DonkeyUnityProcess
 from gym_donkeycar.envs.donkey_sim import DonkeyUnitySimContoller
+from gym_donkeycar.lane_detector import LaneDetector
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,8 @@ class DonkeyEnv(gym.Env):
             time.sleep(conf["start_delay"])
 
         # start simulation com
-        self.viewer = DonkeyUnitySimContoller(conf=conf)
+        lane_detector = LaneDetector() if conf.get("lane_detection") else None
+        self.viewer = DonkeyUnitySimContoller(conf=conf, lane_detector=lane_detector)
 
         # Note: for some RL algorithms, it would be better to normalize the action space to [-1, 1]
         # and then rescale to proper limtis

@@ -61,12 +61,12 @@ def rotate_vec(q, v):
 
 
 class DonkeyUnitySimContoller:
-    def __init__(self, conf: Dict[str, Any]):
+    def __init__(self, conf: Dict[str, Any], lane_detector=None):
         logger.setLevel(conf["log_level"])
 
         self.address = (conf["host"], conf["port"])
 
-        self.handler = DonkeyUnitySimHandler(conf=conf)
+        self.handler = DonkeyUnitySimHandler(conf=conf, lane_detector=lane_detector)
 
         self.client = SimClient(self.address, self.handler)
 
@@ -124,8 +124,9 @@ class DonkeyUnitySimContoller:
 
 
 class DonkeyUnitySimHandler(IMesgHandler):
-    def __init__(self, conf: Dict[str, Any]):
+    def __init__(self, conf: Dict[str, Any], lane_detector=None):
         self.conf = conf
+        self.lane_detector = lane_detector
         self.SceneToLoad = conf["level"]
         self.loaded = False
         self.max_cte = conf["max_cte"]
@@ -511,7 +512,10 @@ class DonkeyUnitySimHandler(IMesgHandler):
         image = Image.open(BytesIO(base64.b64decode(img_string)))
 
         # always update the image_array as the observation loop will hang if not changing.
-        self.image_array = np.asarray(image)
+        img = np.asarray(image)
+        if self.lane_detector is not None:
+            img = self.lane_detector.detect(img)
+        self.image_array = img
         self.time_received = time.time()
 
         if "image_b" in message:
