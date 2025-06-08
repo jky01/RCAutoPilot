@@ -30,8 +30,26 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
    The script runs RL Baselines3 Zoo with the SAC algorithm on the `donkey-generated-track-v0` environment. Additional arguments will be forwarded to `train.py`.
 
+   To run the HuggingFace Transformer example, pass the `--transformer` flag (the setup script installs the required `transformers` package):
+
+   ```bash
+   ./start_training.sh --transformer
+   ```
+
+  By default, the example trains continuously until interrupted. Pass
+  `--epochs <n>` after `--transformer` to train for a fixed number of epochs.
+  You can also save and resume training with `--checkpoint <file>` which stores
+  a checkpoint every epoch (change the interval with `--checkpoint-freq`). If an
+  existing file contains only model weights, the script will still load them but
+  the optimizer state will start from scratch. The model weights are periodically saved to
+  `rl-baselines3-zoo/donkey_transformer.pt` (relative to the repository root)
+  by default. Use `--model-path` to change the location and `--save-freq` to
+  control the saving interval.
+  When training starts, the script automatically reloads weights from the last
+  saved file if present.
+
    If you encounter an error about `donkey-generated-track-v0` not being found,
-   make sure the `gym-donkeycar` package is installed (the setup script installs
-   it automatically) or run training via `./start_training.sh` which adds the
-   package to the `PYTHONPATH`.
+   ensure the `gym-donkeycar` package is available. The provided scripts add it
+   to the `PYTHONPATH` and the transformer example imports it automatically so
+   environments are registered.
 
