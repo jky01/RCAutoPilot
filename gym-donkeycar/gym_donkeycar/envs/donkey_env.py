@@ -38,8 +38,10 @@ def supply_defaults(conf: Dict[str, Any]) -> None:
         ("steer_limit", 1.0),
         ("throttle_min", 0.0),
         ("throttle_max", 1.0),
-        ("screenshot_interval", 0),
-        ("screenshot_dir", "screenshots"),
+        # Enable screenshot capture by default every two seconds into
+        # the ``images`` directory so users can inspect raw frames.
+        ("screenshot_interval", 2),
+        ("screenshot_dir", "images"),
     ]
 
     for key, val in defaults:
