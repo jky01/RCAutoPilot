@@ -519,22 +519,23 @@ class DonkeyUnitySimHandler(IMesgHandler):
         img_string = message["image"]
         image = Image.open(BytesIO(base64.b64decode(img_string)))
 
+        # always update the image_array as the observation loop will hang if not changing.
+        img = np.asarray(image)
+        if self.lane_detector is not None:
+            img = self.lane_detector.detect(img)
+
         if self.screenshot_interval > 0:
             now = time.time()
             if now - self.last_screenshot_time >= self.screenshot_interval:
                 os.makedirs(self.screenshot_dir, exist_ok=True)
                 path = os.path.join(self.screenshot_dir, f"{int(now)}.png")
                 try:
-                    image.save(path)
+                    Image.fromarray(img).save(path)
                 except Exception as e:
                     logger.warning(f"Failed to save screenshot: {e}")
                 else:
                     self.last_screenshot_time = now
 
-        # always update the image_array as the observation loop will hang if not changing.
-        img = np.asarray(image)
-        if self.lane_detector is not None:
-            img = self.lane_detector.detect(img)
         self.image_array = img
         self.time_received = time.time()
 
