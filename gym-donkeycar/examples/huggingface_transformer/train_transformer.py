@@ -124,6 +124,11 @@ def main() -> None:
     optim = torch.optim.Adam(model.parameters(), lr=1e-4)
     loss_fn = nn.MSELoss()
 
+    if args.model_path:
+        os.makedirs(os.path.dirname(args.model_path), exist_ok=True)
+    if args.checkpoint:
+        os.makedirs(os.path.dirname(args.checkpoint), exist_ok=True)
+
     start_epoch = 0
     if args.checkpoint and os.path.exists(args.checkpoint):
         ckpt = torch.load(args.checkpoint, map_location=device)

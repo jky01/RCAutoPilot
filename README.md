@@ -42,8 +42,9 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
   a checkpoint every epoch (change the interval with `--checkpoint-freq`). If an
   existing file contains only model weights, the script will still load them but
   the optimizer state will start from scratch. The model weights are periodically saved to
-  `rl-baselines3-zoo/donkey_transformer.pt` by default. Use `--model-path` to
-  change the location and `--save-freq` to control the saving interval.
+  `rl-baselines3-zoo/donkey_transformer.pt` (relative to the repository root)
+  by default. Use `--model-path` to change the location and `--save-freq` to
+  control the saving interval.
   When training starts, the script automatically reloads weights from the last
   saved file if present.
 
