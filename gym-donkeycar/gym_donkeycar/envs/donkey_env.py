@@ -170,8 +170,22 @@ class DonkeyEnv(gym.Env):
         return observation, info
 
     def render(self, mode: str = "human", close: bool = False) -> Optional[np.ndarray]:
+        """Render the environment using the internal viewer."""
         if close:
             self.viewer.quit()
+
+        # When called through a VecEnv, ``mode`` can be ``None``.
+        # Fallback to the env ``render_mode`` when provided to ensure we return
+        # an RGB array for video recording.
+        if mode is None:
+            mode = self.render_mode or "human"
+
+        # Gymnasium expects the mode argument to match the environment
+        # ``render_mode``. If the caller passes "human" while the environment was
+        # created with ``render_mode='rgb_array'``, we override it so that the
+        # frame is returned instead of nothing.
+        if mode == "human" and self.render_mode == "rgb_array":
+            mode = "rgb_array"
 
         return self.viewer.render(mode)
 
