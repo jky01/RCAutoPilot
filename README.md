@@ -22,7 +22,18 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
 2. **Launch the DonkeyCar simulator**. If you have the simulator installed, start it manually or via script before training.
 
-3. **Run training** using the helper script:
+3. **(Optional) Download the pre-trained agents** used by the example scripts. These
+   agents live in the `rl-baselines3-zoo` submodule. Run the following command
+   once after cloning the repository:
+
+   ```bash
+   git submodule update --init --recursive rl-baselines3-zoo/rl-trained-agents
+   ```
+
+   This step is required if you wish to run scripts such as
+   `lane_detection_video.sh` without having trained an agent yourself.
+
+4. **Run training** using the helper script:
 
    ```bash
    ./start_training.sh
