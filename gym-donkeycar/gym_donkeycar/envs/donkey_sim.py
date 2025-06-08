@@ -10,7 +10,7 @@ import os
 import time
 import types
 from io import BytesIO
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image
@@ -113,8 +113,11 @@ class DonkeyUnitySimContoller:
     def exit_scene(self) -> None:
         self.handler.send_exit_scene()
 
-    def render(self, mode: str) -> None:
-        pass
+    def render(self, mode: str) -> Optional[np.ndarray]:
+        """Return a frame for rendering."""
+        if mode == "rgb_array":
+            return np.copy(self.handler.image_array)
+        return None
 
     def is_game_over(self) -> bool:
         return self.handler.is_game_over()
