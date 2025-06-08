@@ -127,9 +127,14 @@ def main() -> None:
     start_epoch = 0
     if args.checkpoint and os.path.exists(args.checkpoint):
         ckpt = torch.load(args.checkpoint, map_location=device)
-        model.load_state_dict(ckpt["model"])
-        optim.load_state_dict(ckpt["optimizer"])
-        start_epoch = ckpt.get("epoch", 0)
+        if isinstance(ckpt, dict) and "model" in ckpt:
+            model.load_state_dict(ckpt["model"])
+            if "optimizer" in ckpt:
+                optim.load_state_dict(ckpt["optimizer"])
+            start_epoch = ckpt.get("epoch", 0)
+        else:
+            # Allow resuming from a plain state_dict file for convenience
+            model.load_state_dict(ckpt)
     elif args.model_path and os.path.exists(args.model_path):
         model.load_state_dict(torch.load(args.model_path, map_location=device))
 
