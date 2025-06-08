@@ -22,12 +22,14 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
 2. **Launch the DonkeyCar simulator**. If you have the simulator installed, start it manually or via script before training.
 
-3. **(Optional) Download the pre-trained agents** used by the example scripts. These
-   agents live in the `rl-baselines3-zoo` submodule. Run the following command
-   once after cloning the repository:
+3. **(Optional) Download the pre-trained agents** used by the example scripts.
+   The RL Zoo references them as a Git submodule, but this repository includes
+   the RL Zoo code directly without its Git metadata. To obtain the agents,
+   clone the repository manually into the expected location:
 
    ```bash
-   git submodule update --init --recursive rl-baselines3-zoo/rl-trained-agents
+   git clone https://github.com/DLR-RM/rl-trained-agents \
+       rl-baselines3-zoo/rl-trained-agents
    ```
 
    This step is required if you wish to run scripts such as
