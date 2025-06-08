@@ -194,6 +194,11 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.starting_line_index = -1
         self.lap_count = 0
 
+        # Screenshot configuration
+        self.screenshot_interval = float(conf.get("screenshot_interval", 0))
+        self.screenshot_dir = conf.get("screenshot_dir", "screenshots")
+        self.last_screenshot_time = time.time()
+
     def on_connect(self, client: SimClient) -> None:  # pytype: disable=signature-mismatch
         logger.debug("socket connected")
         self.client = client
@@ -513,6 +518,18 @@ class DonkeyUnitySimHandler(IMesgHandler):
     def on_telemetry(self, message: Dict[str, Any]) -> None:
         img_string = message["image"]
         image = Image.open(BytesIO(base64.b64decode(img_string)))
+
+        if self.screenshot_interval > 0:
+            now = time.time()
+            if now - self.last_screenshot_time >= self.screenshot_interval:
+                os.makedirs(self.screenshot_dir, exist_ok=True)
+                path = os.path.join(self.screenshot_dir, f"{int(now)}.png")
+                try:
+                    image.save(path)
+                except Exception as e:
+                    logger.warning(f"Failed to save screenshot: {e}")
+                else:
+                    self.last_screenshot_time = now
 
         # always update the image_array as the observation loop will hang if not changing.
         img = np.asarray(image)

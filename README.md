@@ -68,3 +68,10 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    to the `PYTHONPATH` and the transformer example imports it automatically so
    environments are registered.
 
+5. **Optional screenshot capture**
+
+   The DonkeyCar environment supports saving raw camera images every few seconds
+   during training. Set `screenshot_interval` (in seconds) and `screenshot_dir`
+   in the environment configuration to enable this feature. Captured images are
+   stored in the specified directory for later inspection.
+
