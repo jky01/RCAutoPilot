@@ -70,8 +70,20 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
 5. **Optional screenshot capture**
 
-   The DonkeyCar environment supports saving raw camera images every few seconds
-   during training. Set `screenshot_interval` (in seconds) and `screenshot_dir`
-   in the environment configuration to enable this feature. Captured images are
-   stored in the specified directory for later inspection.
+The DonkeyCar environment saves raw camera images every two seconds by default
+into an `images` directory. Adjust `screenshot_interval` (in seconds) or
+`screenshot_dir` in the environment configuration to change this behaviour.
+
+   Example customizing the interval to capture a frame every five seconds:
+
+   ```python
+   import gym
+
+   conf = {
+       "exe_path": "/path/to/donkey_sim.exe",
+       "screenshot_interval": 5,
+   }
+
+   env = gym.make("donkey-generated-track-v0", conf=conf)
+   ```
 
