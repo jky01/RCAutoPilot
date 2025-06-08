@@ -40,8 +40,8 @@ def supply_defaults(conf: Dict[str, Any]) -> None:
         ("throttle_max", 1.0),
         # Enable screenshot capture by default every two seconds into
         # the ``images`` directory so users can inspect raw frames.
-        ("screenshot_interval", 2),
-        ("screenshot_dir", "images"),
+        #("screenshot_interval", 2),
+        #("screenshot_dir", "images"),
     ]
 
     for key, val in defaults:
