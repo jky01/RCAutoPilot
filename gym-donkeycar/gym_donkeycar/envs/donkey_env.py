@@ -47,11 +47,12 @@ def supply_defaults(conf: Dict[str, Any]) -> None:
 
 
 class DonkeyEnv(gym.Env):
-    """
-    OpenAI Gym Environment for Donkey
+    """OpenAI Gym Environment for Donkey.
 
     :param level: name of the level to load
     :param conf: configuration dictionary
+    :param render_mode: rendering mode passed by gymnasium (ignored)
+    :param lane_detection: enable simple lane detection preprocessing
     """
 
     metadata = {"render_modes": ["human", "rgb_array"]}
@@ -59,15 +60,24 @@ class DonkeyEnv(gym.Env):
     ACTION_NAMES: List[str] = ["steer", "throttle"]
     VAL_PER_PIXEL: int = 255
 
-    def __init__(self, level: str, conf: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        level: str,
+        conf: Optional[Dict[str, Any]] = None,
+        render_mode: Optional[str] = None,
+        lane_detection: Optional[bool] = None,
+    ) -> None:
         print("starting DonkeyGym env")
         self.viewer = None
         self.proc = None
+        self.render_mode = render_mode
 
         if conf is None:
             conf = {}
 
         conf["level"] = level
+        if lane_detection is not None:
+            conf["lane_detection"] = lane_detection
 
         # ensure defaults are supplied if missing.
         supply_defaults(conf)
