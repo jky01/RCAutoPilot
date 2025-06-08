@@ -46,7 +46,8 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
   by default. Use `--model-path` to change the location and `--save-freq` to
   control the saving interval.
   When training starts, the script automatically reloads weights from the last
-  saved file if present.
+  saved file if present. Press `Ctrl+C` at any time to stop training; if
+  `--checkpoint` is specified, a final checkpoint is written before exiting.
 
    If you encounter an error about `donkey-generated-track-v0` not being found,
    ensure the `gym-donkeycar` package is available. The provided scripts add it

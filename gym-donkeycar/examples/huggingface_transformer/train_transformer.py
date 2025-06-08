@@ -144,35 +144,49 @@ def main() -> None:
         model.load_state_dict(torch.load(args.model_path, map_location=device))
 
     epoch = start_epoch
-    while True:
-        for frames, acts, next_action in loader:
-            images = frames.to(device)
-            actions = acts.to(device)
-            pred = model(images, actions)
-            loss = loss_fn(pred, next_action.to(device))
-            optim.zero_grad()
-            loss.backward()
-            optim.step()
-        print(f"Epoch {epoch+1} loss: {loss.item():.4f}")
+    try:
+        while True:
+            for frames, acts, next_action in loader:
+                images = frames.to(device)
+                actions = acts.to(device)
+                pred = model(images, actions)
+                loss = loss_fn(pred, next_action.to(device))
+                optim.zero_grad()
+                loss.backward()
+                optim.step()
+            print(f"Epoch {epoch+1} loss: {loss.item():.4f}")
 
-        if args.checkpoint_freq and (epoch + 1) % args.checkpoint_freq == 0 and args.checkpoint:
+            if args.checkpoint_freq and (epoch + 1) % args.checkpoint_freq == 0 and args.checkpoint:
+                torch.save(
+                    {
+                        "epoch": epoch + 1,
+                        "model": model.state_dict(),
+                        "optimizer": optim.state_dict(),
+                    },
+                    args.checkpoint,
+                )
+            if args.save_freq and (epoch + 1) % args.save_freq == 0 and args.model_path:
+                torch.save(model.state_dict(), args.model_path)
+
+            epoch += 1
+            if args.epochs and epoch >= args.epochs:
+                break
+    except KeyboardInterrupt:
+        print("Training interrupted by user. Saving checkpoint...")
+        if args.checkpoint:
             torch.save(
                 {
-                    "epoch": epoch + 1,
+                    "epoch": epoch,
                     "model": model.state_dict(),
                     "optimizer": optim.state_dict(),
                 },
                 args.checkpoint,
             )
-        if args.save_freq and (epoch + 1) % args.save_freq == 0 and args.model_path:
+        elif args.model_path:
             torch.save(model.state_dict(), args.model_path)
-
-        epoch += 1
-        if args.epochs and epoch >= args.epochs:
-            break
-
-    if args.model_path:
-        torch.save(model.state_dict(), args.model_path)
+    finally:
+        if args.model_path:
+            torch.save(model.state_dict(), args.model_path)
 
 
 if __name__ == "__main__":
