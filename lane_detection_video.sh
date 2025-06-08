@@ -2,20 +2,18 @@
 
 set -e
 
-MODEL_PATH="rl-baselines3-zoo/rl-trained-agents/sac/donkey-generated-track-v0.zip"
+# Use the model generated during training located in the logs folder
+FOLDER="rl-baselines3-zoo/logs"
 
-if [ ! -f "$MODEL_PATH" ]; then
-    echo "Pre-trained agents not found at $MODEL_PATH." >&2
-    if [ ! -d "rl-baselines3-zoo/rl-trained-agents" ]; then
-        echo "Cloning rl-trained-agents repository..." >&2
-        git clone https://github.com/DLR-RM/rl-trained-agents rl-baselines3-zoo/rl-trained-agents
-    fi
-    ln -sf rl-baselines3-zoo/rl-trained-agents
+if [ ! -d "$FOLDER" ]; then
+    echo "Error: log directory '$FOLDER' does not exist. Please run start_training.sh first." >&2
+    exit 1
 fi
 
 source venv/bin/activate
 python -m rl_zoo3.record_video --algo sac \
     --env donkey-generated-track-v0 \
+    --folder "$FOLDER" \
     --env-kwargs lane_detection:True \
     --n-timesteps 1000 \
     --output-folder videos
