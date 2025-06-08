@@ -30,6 +30,7 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ```bash
    git clone https://github.com/DLR-RM/rl-trained-agents \
        rl-baselines3-zoo/rl-trained-agents
+   ln -sf rl-baselines3-zoo/rl-trained-agents 
    ```
 
    This step is required if you wish to run scripts such as
