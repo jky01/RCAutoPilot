@@ -19,41 +19,49 @@ except Exception:  # pragma: no cover - CLRNet is optional
 
 
 class CLRLaneDetectionWrapper(gym.ObservationWrapper):
-    """Wrap environment to replace images with lane masks."""
+    """Wrap environment to replace images with lane masks when CLRNet is available."""
 
     def __init__(self, env: gym.Env, config_path: str | None = None, checkpoint_path: str | None = None, device: str = "cpu"):
         super().__init__(env)
         self.device = device
         self.model = None
+
         if config_path is None:
             config_path = os.environ.get("LANE_CFG")
         if checkpoint_path is None:
             checkpoint_path = os.environ.get("LANE_CKPT")
 
+        self.use_lane = False
         if config_path and checkpoint_path and cv2 is not None and torch is not None:
-            cfg = Config.fromfile(config_path)
-            self.resize = (cfg.img_w, cfg.img_h)
-            self.cut_height = getattr(cfg, "cut_height", 0)
-            self.img_norm = cfg.img_norm
-            self.model = build_net(cfg)
-            load_network(self.model, checkpoint_path)
-            self.model.to(self.device)
-            self.model.eval()
-            self.cfg = cfg
-        else:
+            try:
+                cfg = Config.fromfile(config_path)
+                self.resize = (cfg.img_w, cfg.img_h)
+                self.cut_height = getattr(cfg, "cut_height", 0)
+                self.img_norm = cfg.img_norm
+                self.model = build_net(cfg)
+                load_network(self.model, checkpoint_path)
+                self.model.to(self.device)
+                self.model.eval()
+                self.cfg = cfg
+                self.use_lane = True
+            except Exception as exc:  # pragma: no cover - dependency issues at runtime
+                print(f"Warning: failed to load CLRNet ({exc}), continuing without lane detection")
+        if not self.use_lane:
+            # Fallback: no change in observation
             obs_shape = env.observation_space.shape
             self.resize = (obs_shape[1], obs_shape[0])
             self.cut_height = 0
             self.img_norm = {"mean": [0, 0, 0], "std": [1, 1, 1]}
             self.cfg = None
-
-        # observation is single channel mask
-        self.observation_space = spaces.Box(
-            low=0,
-            high=255,
-            shape=(self.resize[1], self.resize[0], 1),
-            dtype=np.uint8,
-        )
+            self.observation_space = env.observation_space
+        else:
+            # observation is single channel mask
+            self.observation_space = spaces.Box(
+                low=0,
+                high=255,
+                shape=(self.resize[1], self.resize[0], 1),
+                dtype=np.uint8,
+            )
 
     def observation(self, observation: np.ndarray) -> np.ndarray:
         if self.model is None or cv2 is None or torch is None:

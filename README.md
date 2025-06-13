@@ -32,7 +32,8 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
    Lane-line preprocessing using [CLRNet](https://github.com/Turoad/CLRNet) is enabled by default. The training
    script reads the `LANE_CFG` and `LANE_CKPT` environment variables to locate the CLRNet configuration and
-   checkpoint. Set these variables to override the defaults before running the script.
+   checkpoint. Set these variables to override the defaults before running the script. If the CLRNet
+   dependencies are missing, the wrapper falls back to using the raw camera frames instead of lane masks.
 
    If you encounter an error about `donkey-generated-track-v0` not being found,
    make sure the `gym-donkeycar` package is installed (the setup script installs
