@@ -12,6 +12,14 @@ cd "$SCRIPT_DIR"
 source venv/bin/activate
 
 cd "$SCRIPT_DIR/rl-baselines3-zoo"
+# Launch DonkeyCar simulator if available
+SIM_PATH="$HOME/DonkeySimLinux/donkey_sim.x86_64"
+if [ -x "$SIM_PATH" ]; then
+    "$SIM_PATH" &
+    SIM_PID=$!
+    trap '[ -n "$SIM_PID" ] && kill $SIM_PID' EXIT
+fi
+
 
 
 # Ensure the local gym-donkeycar package is on the Python path so
