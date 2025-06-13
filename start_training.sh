@@ -37,5 +37,10 @@ then
     exit 1
 fi
 
+EXTRA_ARGS=""
+if [ -n "$LANE_CFG" ] && [ -n "$LANE_CKPT" ]; then
+    EXTRA_ARGS="--env-wrapper rl_zoo3.lane_detection_wrapper.CLRLaneDetectionWrapper --env-kwargs config_path=$LANE_CFG checkpoint_path=$LANE_CKPT"
+fi
+
 python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
-       --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "$@"
+       --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 $EXTRA_ARGS "$@"
