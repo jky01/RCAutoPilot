@@ -55,6 +55,10 @@ class CLRLaneDetectionWrapper(gym.ObservationWrapper):
             self.img_norm = {"mean": [0, 0, 0], "std": [1, 1, 1]}
             self.cfg = None
             self.observation_space = env.observation_space
+            if config_path or checkpoint_path:
+                print(
+                    "Lane detection disabled: dependencies missing or CLRNet failed to load."
+                )
         else:
             # observation is single channel mask
             self.observation_space = spaces.Box(

@@ -39,8 +39,11 @@ fi
 
 LANE_CFG="${LANE_CFG:-$SCRIPT_DIR/CLRNet/configs/clrnet/clr_dla34_culane.py}"
 LANE_CKPT="${LANE_CKPT:-$SCRIPT_DIR/culane_dla34.pth}"
+LANE_CAPTURE_DIR="${LANE_CAPTURE_DIR:-lane_captures}"
 export LANE_CFG
 export LANE_CKPT
+export LANE_CAPTURE_DIR
+mkdir -p "$LANE_CAPTURE_DIR"
 # Pass wrapper path as a string so the hyperparameters parser does not attempt
 # to evaluate it as Python code. Store the CLI arguments in an array to avoid
 # quoting issues.
