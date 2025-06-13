@@ -39,15 +39,14 @@ fi
 
 LANE_CFG="${LANE_CFG:-$SCRIPT_DIR/CLRNet/configs/clrnet/clr_dla34_culane.py}"
 LANE_CKPT="${LANE_CKPT:-$SCRIPT_DIR/culane_dla34.pth}"
+export LANE_CFG
+export LANE_CKPT
 # Pass wrapper path as a string so the hyperparameters parser does not attempt
 # to evaluate it as Python code. Store the CLI arguments in an array to avoid
 # quoting issues.
 EXTRA_ARGS=(
   --hyperparams
   env_wrapper:"'rl_zoo3.lane_detection_wrapper.CLRLaneDetectionWrapper'"
-  --env-kwargs
-  config_path:"'$LANE_CFG'"
-  checkpoint_path:"'$LANE_CKPT'"
 )
 
 python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \

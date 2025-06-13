@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
@@ -24,6 +25,11 @@ class CLRLaneDetectionWrapper(gym.ObservationWrapper):
         super().__init__(env)
         self.device = device
         self.model = None
+        if config_path is None:
+            config_path = os.environ.get("LANE_CFG")
+        if checkpoint_path is None:
+            checkpoint_path = os.environ.get("LANE_CKPT")
+
         if config_path and checkpoint_path and cv2 is not None and torch is not None:
             cfg = Config.fromfile(config_path)
             self.resize = (cfg.img_w, cfg.img_h)
