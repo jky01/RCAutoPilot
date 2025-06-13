@@ -18,6 +18,7 @@ if [ -x "$SIM_PATH" ]; then
     "$SIM_PATH" &
     SIM_PID=$!
     trap '[ -n "$SIM_PID" ] && kill $SIM_PID' EXIT
+    sleep 2
 fi
 
 
