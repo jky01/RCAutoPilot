@@ -39,7 +39,7 @@ fi
 
 LANE_CFG="${LANE_CFG:-$SCRIPT_DIR/CLRNet/configs/clrnet/clr_dla34_culane.py}"
 LANE_CKPT="${LANE_CKPT:-$SCRIPT_DIR/culane_dla34.pth}"
-EXTRA_ARGS="--env-wrapper rl_zoo3.lane_detection_wrapper.CLRLaneDetectionWrapper --env-kwargs config_path:'$LANE_CFG' checkpoint_path:'$LANE_CKPT'"
+EXTRA_ARGS="--hyperparams env_wrapper:rl_zoo3.lane_detection_wrapper.CLRLaneDetectionWrapper --env-kwargs config_path:'$LANE_CFG' checkpoint_path:'$LANE_CKPT'"
 
 python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
        --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 $EXTRA_ARGS "$@"
