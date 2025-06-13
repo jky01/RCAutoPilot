@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import time
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
@@ -63,6 +64,13 @@ class CLRLaneDetectionWrapper(gym.ObservationWrapper):
                 dtype=np.uint8,
             )
 
+        # Setup periodic capture of lane masks
+        self.capture_dir = os.environ.get("LANE_CAPTURE_DIR", "lane_captures")
+        self.capture_interval = float(os.environ.get("LANE_CAPTURE_INTERVAL", "5"))
+        if self.capture_dir:
+            os.makedirs(self.capture_dir, exist_ok=True)
+        self._last_capture = time.time()
+
     def observation(self, observation: np.ndarray) -> np.ndarray:
         if self.model is None or cv2 is None or torch is None:
             return observation
@@ -90,4 +98,10 @@ class CLRLaneDetectionWrapper(gym.ObservationWrapper):
         if self.cut_height > 0:
             pad = np.zeros((self.cut_height, self.resize[0], 1), dtype=np.uint8)
             mask = np.vstack((pad, mask))
+        if self.capture_dir:
+            now = time.time()
+            if now - self._last_capture >= self.capture_interval:
+                path = os.path.join(self.capture_dir, f"{int(now)}.png")
+                cv2.imwrite(path, mask)
+                self._last_capture = now
         return mask
