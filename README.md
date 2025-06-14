@@ -20,6 +20,8 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
   such as `sklearn` and `Shapely==1.7.0`. It then runs
   `pip install --no-build-isolation -e CLRNet` so the already-installed
   PyTorch is reused during the build and lane detection works out of the box.
+  The build step is patched to skip compiling CLRNet's optional CUDA extension,
+  which may fail on modern toolchains.
 
    Optionally install extra tools for plotting and tests after the environment
    is activated:
