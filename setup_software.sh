@@ -14,9 +14,11 @@ if [ "$(id -u)" -eq 0 ]; then
     find CLRNet -name '*.egg-info' -exec rm -rf {} + || true
     find CLRNet -name 'build' -type d -exec rm -rf {} + || true
     find CLRNet -name 'dist' -type d -exec rm -rf {} + || true
+    find . -maxdepth 1 -iname 'clrnet*.egg-info' -exec rm -rf {} + || true
 else
     sudo chown -R "$OWNER":"$OWNER" rl-baselines3-zoo CLRNet
     sudo find CLRNet -name '*.egg-info' -exec rm -rf {} + || true
     sudo find CLRNet -name 'build' -type d -exec rm -rf {} + || true
     sudo find CLRNet -name 'dist' -type d -exec rm -rf {} + || true
+    sudo find . -maxdepth 1 -iname 'clrnet*.egg-info' -exec rm -rf {} + || true
 fi

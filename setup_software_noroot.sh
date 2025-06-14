@@ -23,6 +23,7 @@ sed -i \
 sudo find CLRNet -name '*.egg-info' -exec rm -rf {} + || true
 sudo find CLRNet -name 'build' -type d -exec rm -rf {} + || true
 sudo find CLRNet -name 'dist' -type d -exec rm -rf {} + || true
+sudo find . -maxdepth 1 -iname 'clrnet*.egg-info' -exec rm -rf {} + || true
 # Skip building CLRNet's CUDA extension which fails with modern toolchains
 sed -i \
   -e 's/from torch.utils.cpp_extension import CUDAExtension, BuildExtension/from torch.utils.cpp_extension import BuildExtension/' \
