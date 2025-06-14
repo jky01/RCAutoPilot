@@ -63,3 +63,18 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    it automatically) or run training via `./start_training.sh` which adds the
    package to the `PYTHONPATH`.
 
+## Troubleshooting
+
+If the training script prints messages such as:
+
+```
+Lane detection dependencies are missing; install cv2 and torch
+Lane detection disabled: check config, checkpoint, and dependencies.
+```
+
+the CLRNet lane detector could not be loaded. Run `source ./setup_env.sh` to
+install `torch`, `torchvision`, `opencv-python` and other required packages.
+Ensure `LANE_CFG` and `LANE_CKPT` point to the CLRNet configuration and
+checkpoint files. Training will fall back to raw camera images when lane
+detection is disabled.
+
