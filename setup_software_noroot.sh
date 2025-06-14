@@ -18,6 +18,8 @@ sed -i \
   -e 's/^sklearn$/scikit-learn/' \
   -e 's/^Shapely==.*/Shapely/' \
   CLRNet/requirements.txt
+# Remove any stale egg-info directories from previous installs
+find CLRNet -maxdepth 1 -name '*.egg-info' -exec rm -rf {} +
 # Skip building CLRNet's CUDA extension which fails with modern toolchains
 sed -i \
   -e 's/from torch.utils.cpp_extension import CUDAExtension, BuildExtension/from torch.utils.cpp_extension import BuildExtension/' \
