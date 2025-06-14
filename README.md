@@ -32,7 +32,9 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
 
   Lane-line preprocessing using [CLRNet](https://github.com/Turoad/CLRNet) is enabled by default. The training
   script reads the `LANE_CFG` and `LANE_CKPT` environment variables to locate the CLRNet configuration and
-  checkpoint. Set these variables to override the defaults before running the script. If the CLRNet
+  checkpoint. The pre-trained CULane model can be downloaded from the
+  [CLRNet releases](https://github.com/Turoad/CLRNet/releases) page (file `culane_dla34.pth`).
+  Place it in the repository root or set `LANE_CKPT` to its location. If the CLRNet
   dependencies are missing, the wrapper falls back to using the raw camera frames instead of lane masks.
   When lane detection is active, a lane-mask image is saved every five seconds in the `lane_captures/` directory
   (configurable via `LANE_CAPTURE_DIR` and `LANE_CAPTURE_INTERVAL`). If this directory stays empty, make sure the

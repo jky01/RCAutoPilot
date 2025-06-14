@@ -44,6 +44,12 @@ export LANE_CFG
 export LANE_CKPT
 export LANE_CAPTURE_DIR
 mkdir -p "$LANE_CAPTURE_DIR"
+if [ ! -f "$LANE_CFG" ]; then
+    echo "Warning: CLRNet config not found at $LANE_CFG" >&2
+fi
+if [ ! -f "$LANE_CKPT" ]; then
+    echo "Warning: CLRNet checkpoint not found at $LANE_CKPT" >&2
+fi
 # Pass wrapper path as a string so the hyperparameters parser does not attempt
 # to evaluate it as Python code. Store the CLI arguments in an array to avoid
 # quoting issues.
