@@ -23,8 +23,8 @@ sed -i \
   -e 's/from torch.utils.cpp_extension import CUDAExtension, BuildExtension/from torch.utils.cpp_extension import BuildExtension/' \
   -e '/def get_extensions/,/return extensions/c\
 def get_extensions():\n    return []\n' \
-  -e 's/ext_modules=get_extensions()/ext_modules=[],/' \
-  -e 's/cmdclass={"build_ext": BuildExtension}/cmdclass={},/' \
+  -e 's/ext_modules=get_extensions()/ext_modules=[]/' \
+  -e 's/cmdclass={"build_ext": BuildExtension}/cmdclass={}/' \
   CLRNet/setup.py
 # Install CLRNet using the already installed PyTorch
 pip install --no-build-isolation -e CLRNet
