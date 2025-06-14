@@ -11,6 +11,11 @@ pip install torch torchvision opencv-python mmcv
 # CLRNet pins very old versions of PyTorch and MMCV that are not available on
 # newer Python versions. Remove those pins so the currently installed packages
 # are used instead.
-sed -i -e '/^torch==/d' -e '/^torchvision==/d' -e '/^mmcv==/d' CLRNet/requirements.txt
+sed -i \
+  -e '/^torch==/d' \
+  -e '/^torchvision==/d' \
+  -e '/^mmcv==/d' \
+  -e 's/^sklearn$/scikit-learn/' \
+  CLRNet/requirements.txt
 # Install CLRNet using the already installed PyTorch
 pip install --no-build-isolation -e CLRNet

@@ -43,9 +43,17 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
   [CLRNet releases](https://github.com/Turoad/CLRNet/releases) page (file `culane_dla34.pth`).
   Place it in the repository root or set `LANE_CKPT` to its location. If the CLRNet
   dependencies are missing, the wrapper falls back to using the raw camera frames instead of lane masks.
-  When lane detection is active, a lane-mask image is saved every five seconds in the `lane_captures/` directory
+ When lane detection is active, a lane-mask image is saved every five seconds in the `lane_captures/` directory
   (configurable via `LANE_CAPTURE_DIR` and `LANE_CAPTURE_INTERVAL`). If this directory stays empty, make sure the
   CLRNet dependencies are installed and the configuration and checkpoint paths are correct.
+
+4. **Run inference** using the provided script:
+
+   ```bash
+   ./start_inference.sh -n 5000 -f logs/sac
+   ```
+
+   This wraps the environment with the same CLRNet preprocessing as training and plays the trained SAC agent.
 
    If you encounter an error about `donkey-generated-track-v0` not being found,
    make sure the `gym-donkeycar` package is installed (the setup script installs
