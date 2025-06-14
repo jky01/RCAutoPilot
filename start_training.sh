@@ -37,5 +37,26 @@ then
     exit 1
 fi
 
+LANE_CFG="${LANE_CFG:-$SCRIPT_DIR/CLRNet/configs/clrnet/clr_dla34_culane.py}"
+LANE_CKPT="${LANE_CKPT:-$SCRIPT_DIR/culane_dla34.pth}"
+LANE_CAPTURE_DIR="${LANE_CAPTURE_DIR:-lane_captures}"
+export LANE_CFG
+export LANE_CKPT
+export LANE_CAPTURE_DIR
+mkdir -p "$LANE_CAPTURE_DIR"
+if [ ! -f "$LANE_CFG" ]; then
+    echo "Warning: CLRNet config not found at $LANE_CFG" >&2
+fi
+if [ ! -f "$LANE_CKPT" ]; then
+    echo "Warning: CLRNet checkpoint not found at $LANE_CKPT" >&2
+fi
+# Pass wrapper path as a string so the hyperparameters parser does not attempt
+# to evaluate it as Python code. Store the CLI arguments in an array to avoid
+# quoting issues.
+EXTRA_ARGS=(
+  --hyperparams
+  env_wrapper:"'rl_zoo3.lane_detection_wrapper.CLRLaneDetectionWrapper'"
+)
+
 python train.py --algo sac --env donkey-generated-track-v0 --gym-packages gym_donkeycar \
-       --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "$@"
+       --eval-freq 10000 --eval-episodes 10 --n-eval-envs 1 "${EXTRA_ARGS[@]}" "$@"

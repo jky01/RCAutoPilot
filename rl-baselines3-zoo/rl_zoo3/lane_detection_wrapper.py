@@ -1,0 +1,118 @@
+"""Observation wrapper to extract lane lines using CLRNet."""
+
+from __future__ import annotations
+
+import os
+import time
+import gymnasium as gym
+import numpy as np
+from gymnasium import spaces
+
+try:
+    import cv2
+    import torch
+    from clrnet.utils.config import Config
+    from clrnet.models.registry import build_net
+    from clrnet.utils.net_utils import load_network
+except Exception:  # pragma: no cover - CLRNet is optional
+    cv2 = None
+    torch = None
+
+
+class CLRLaneDetectionWrapper(gym.ObservationWrapper):
+    """Wrap environment to replace images with lane masks when CLRNet is available."""
+
+    def __init__(self, env: gym.Env, config_path: str | None = None, checkpoint_path: str | None = None, device: str = "cpu"):
+        super().__init__(env)
+        self.device = device
+        self.model = None
+
+        if config_path is None:
+            config_path = os.environ.get("LANE_CFG")
+        if checkpoint_path is None:
+            checkpoint_path = os.environ.get("LANE_CKPT")
+
+        self.use_lane = False
+        if config_path and checkpoint_path:
+            if not os.path.isfile(config_path):
+                print(f"Lane detection config not found: {config_path}")
+            elif not os.path.isfile(checkpoint_path):
+                print(f"Lane detection checkpoint not found: {checkpoint_path}")
+            elif cv2 is None or torch is None:
+                print("Lane detection dependencies are missing; install cv2 and torch")
+            else:
+                try:
+                    cfg = Config.fromfile(config_path)
+                    self.resize = (cfg.img_w, cfg.img_h)
+                    self.cut_height = getattr(cfg, "cut_height", 0)
+                    self.img_norm = cfg.img_norm
+                    self.model = build_net(cfg)
+                    load_network(self.model, checkpoint_path)
+                    self.model.to(self.device)
+                    self.model.eval()
+                    self.cfg = cfg
+                    self.use_lane = True
+                except Exception as exc:  # pragma: no cover - dependency issues at runtime
+                    print(f"Warning: failed to load CLRNet ({exc}), continuing without lane detection")
+        if not self.use_lane:
+            # Fallback: no change in observation
+            obs_shape = env.observation_space.shape
+            self.resize = (obs_shape[1], obs_shape[0])
+            self.cut_height = 0
+            self.img_norm = {"mean": [0, 0, 0], "std": [1, 1, 1]}
+            self.cfg = None
+            self.observation_space = env.observation_space
+            if config_path or checkpoint_path:
+                print(
+                    "Lane detection disabled: check config, checkpoint, and dependencies."
+                )
+        else:
+            # observation is single channel mask
+            self.observation_space = spaces.Box(
+                low=0,
+                high=255,
+                shape=(self.resize[1], self.resize[0], 1),
+                dtype=np.uint8,
+            )
+
+        # Setup periodic capture of lane masks
+        self.capture_dir = os.environ.get("LANE_CAPTURE_DIR", "lane_captures")
+        self.capture_interval = float(os.environ.get("LANE_CAPTURE_INTERVAL", "5"))
+        if self.capture_dir:
+            os.makedirs(self.capture_dir, exist_ok=True)
+        self._last_capture = time.time()
+
+    def observation(self, observation: np.ndarray) -> np.ndarray:
+        if self.model is None or cv2 is None or torch is None:
+            return observation
+
+        img = cv2.resize(observation, self.resize)
+        if self.cut_height > 0:
+            img = img[self.cut_height :, :, :]
+        img = img.astype(np.float32)
+        mean = np.array(self.img_norm["mean"], dtype=np.float32).reshape(1, 1, 3)
+        std = np.array(self.img_norm["std"], dtype=np.float32).reshape(1, 1, 3)
+        img = (img - mean) / std
+        tensor = torch.from_numpy(img.transpose(2, 0, 1)).unsqueeze(0).to(self.device)
+
+        with torch.no_grad():
+            output = self.model({"img": tensor})
+            lanes = self.model.heads.get_lanes(output)[0]
+
+        mask = np.zeros((self.resize[1], self.resize[0]), dtype=np.uint8)
+        for lane in lanes:
+            pts = lane.to_array(self.cfg).astype(np.int32)
+            if len(pts) > 1:
+                cv2.polylines(mask, [pts], isClosed=False, color=255, thickness=2)
+
+        mask = mask[:, :, None]
+        if self.cut_height > 0:
+            pad = np.zeros((self.cut_height, self.resize[0], 1), dtype=np.uint8)
+            mask = np.vstack((pad, mask))
+        if self.capture_dir:
+            now = time.time()
+            if now - self._last_capture >= self.capture_interval:
+                path = os.path.join(self.capture_dir, f"{int(now)}.png")
+                cv2.imwrite(path, mask)
+                self._last_capture = now
+        return mask

@@ -13,6 +13,16 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    source ./setup_env.sh
    ```
 
+  This installs `gym-donkeycar` and then installs CLRNet with its dependencies
+  (`torch`, `torchvision`, `opencv-python`, `mmcv`). The setup script patches
+  `CLRNet/requirements.txt` to remove pinned versions that would otherwise
+  force an incompatible PyTorch or MMCV and replaces deprecated requirements
+  such as `sklearn` and `Shapely==1.7.0`. It then runs
+  `pip install --no-build-isolation -e CLRNet` so the already-installed
+  PyTorch is reused during the build and lane detection works out of the box.
+  The build step is patched to skip compiling CLRNet's optional CUDA extension,
+  which may fail on modern toolchains.
+
    Optionally install extra tools for plotting and tests after the environment
    is activated:
 
@@ -29,6 +39,24 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ```
 
    The script runs RL Baselines3 Zoo with the SAC algorithm on the `donkey-generated-track-v0` environment. Additional arguments will be forwarded to `train.py`.
+
+  Lane-line preprocessing using [CLRNet](https://github.com/Turoad/CLRNet) is enabled by default. The training
+  script reads the `LANE_CFG` and `LANE_CKPT` environment variables to locate the CLRNet configuration and
+  checkpoint. The pre-trained CULane model can be downloaded from the
+  [CLRNet releases](https://github.com/Turoad/CLRNet/releases) page (file `culane_dla34.pth`).
+  Place it in the repository root or set `LANE_CKPT` to its location. If the CLRNet
+  dependencies are missing, the wrapper falls back to using the raw camera frames instead of lane masks.
+ When lane detection is active, a lane-mask image is saved every five seconds in the `lane_captures/` directory
+  (configurable via `LANE_CAPTURE_DIR` and `LANE_CAPTURE_INTERVAL`). If this directory stays empty, make sure the
+  CLRNet dependencies are installed and the configuration and checkpoint paths are correct.
+
+4. **Run inference** using the provided script:
+
+   ```bash
+   ./start_inference.sh -n 5000 -f logs/sac
+   ```
+
+   This wraps the environment with the same CLRNet preprocessing as training and plays the trained SAC agent.
 
    If you encounter an error about `donkey-generated-track-v0` not being found,
    make sure the `gym-donkeycar` package is installed (the setup script installs
