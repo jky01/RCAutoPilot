@@ -14,7 +14,9 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    ```
 
    This installs `gym-donkeycar` and then installs CLRNet with its dependencies
-   (`torch`, `torchvision`, `opencv-python`, `mmcv`). The setup script uses
+   (`torch`, `torchvision`, `opencv-python`, `mmcv`). The setup script patches
+   `CLRNet/requirements.txt` to remove pinned versions that would otherwise
+   force an incompatible PyTorch or MMCV. It then runs
    `pip install --no-build-isolation -e CLRNet` so the already-installed
    PyTorch is reused during the build and lane detection works out of the box.
 
