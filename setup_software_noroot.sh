@@ -16,6 +16,7 @@ sed -i \
   -e '/^torchvision==/d' \
   -e '/^mmcv==/d' \
   -e 's/^sklearn$/scikit-learn/' \
+  -e 's/^Shapely==.*/Shapely/' \
   CLRNet/requirements.txt
 # Install CLRNet using the already installed PyTorch
 pip install --no-build-isolation -e CLRNet

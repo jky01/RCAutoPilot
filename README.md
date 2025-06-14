@@ -13,12 +13,13 @@ This repository bundles [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselin
    source ./setup_env.sh
    ```
 
-   This installs `gym-donkeycar` and then installs CLRNet with its dependencies
-   (`torch`, `torchvision`, `opencv-python`, `mmcv`). The setup script patches
-   `CLRNet/requirements.txt` to remove pinned versions that would otherwise
-   force an incompatible PyTorch or MMCV. It then runs
-   `pip install --no-build-isolation -e CLRNet` so the already-installed
-   PyTorch is reused during the build and lane detection works out of the box.
+  This installs `gym-donkeycar` and then installs CLRNet with its dependencies
+  (`torch`, `torchvision`, `opencv-python`, `mmcv`). The setup script patches
+  `CLRNet/requirements.txt` to remove pinned versions that would otherwise
+  force an incompatible PyTorch or MMCV and replaces deprecated requirements
+  such as `sklearn` and `Shapely==1.7.0`. It then runs
+  `pip install --no-build-isolation -e CLRNet` so the already-installed
+  PyTorch is reused during the build and lane detection works out of the box.
 
    Optionally install extra tools for plotting and tests after the environment
    is activated:
